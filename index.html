@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>データベースコレクション</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: row-reverse; /* サイドバーを右に固定 */
+        }
+
+        /* サイドバー */
+        #sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100%;
+        }
+
+        #sidebar h2 {
+            color: white;
+            text-align: center;
+        }
+
+        /* カテゴリーボタン */
+        .category-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            margin: 10px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* メインコンテンツ */
+        #main-content {
+            margin-right: 270px; /* サイドバー分のスペース */
+            padding: 20px;
+            flex-grow: 1;
+            background-color: white;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #search-bar {
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        /* データベースリスト */
+        #database-list {
+            margin-top: 20px;
+        }
+
+        .database-item {
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .view-article-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-article-btn:hover {
+            background-color: #218838;
+        }
+
+        /* 管理者情報 */
+        #admin-info {
+            margin-top: 20px;
+            background-color: #444;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        #admin-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        #admin-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- サイドバー -->
+    <div id="sidebar">
+        <h2>カテゴリー</h2>
+        <button class="category-btn" onclick="filterDatabases('IT')">IT</button>
+        <button class="category-btn" onclick="filterDatabases('医療')">医療</button>
+        <button class="category-btn" onclick="filterDatabases('金融')">金融</button>
+        <button class="category-btn" onclick="filterDatabases('歴史')">歴史</button>
+        <button class="category-btn" onclick="filterDatabases('科学')">科学</button>
+        <button class="category-btn" onclick="filterDatabases('教育')">教育</button>
+
+        <!-- 管理者情報 -->
+        <div id="admin-info">
+            <h3>管理者情報</h3>
+            <p><strong>名前:</strong> 岡田 祐介</p>
+            <p><strong>連絡先</strong> okadayusuke.business@outlook.jp</p>
+            <p><strong>※返信は遅れる可能性があります</strong></p>
+        </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div id="main-content">
+        <header>
+            <h1>データベースコレクション</h1>
+            <input type="text" id="search-bar" placeholder="データベースを検索..." oninput="searchDatabases()">
+        </header>
+
+        <section id="database-list">
+            <h2>データベース一覧</h2>
+            <div class="database-item" data-category="IT">
+                <strong>名前:</strong> ITデータベース<br>
+                <strong>カテゴリー:</strong> IT<br>
+                <strong>説明:</strong> ソフトウェアやテクノロジー関連のデータベース<br>
+                <button class="view-article-btn" onclick="viewCategory('IT')">このカテゴリー記事を見る</button>
+            </div>
+            <div class="database-item" data-category="医療">
+                <strong>名前:</strong> 医療データベース<br>
+                <strong>カテゴリー:</strong> 医療<br>
+                <strong>説明:</strong> 医療データや研究成果を集めたデータベース<br>
+                <button class="view-article-btn" onclick="viewCategory('医療')">このカテゴリー記事を見る</button>
+            </div>
+            <div class="database-item" data-category="金融">
+                <strong>名前:</strong> 金融データベース<br>
+                <strong>カテゴリー:</strong> 金融<br>
+                <strong>説明:</strong> 金融市場や経済データを収集<br>
+                <button class="view-article-btn" onclick="viewCategory('金融')">このカテゴリー記事を見る</button>
+            </div>
+            <div class="database-item" data-category="歴史">
+                <strong>名前:</strong> 歴史データベース<br>
+                <strong>カテゴリー:</strong> 歴史<br>
+                <strong>説明:</strong> 歴史的なデータや文書を網羅<br>
+                <button class="view-article-btn" onclick="viewCategory('歴史')">このカテゴリー記事を見る</button>
+            </div>
+            <div class="database-item" data-category="科学">
+                <strong>名前:</strong> 科学データベース<br>
+                <strong>カテゴリー:</strong> 科学<br>
+                <strong>説明:</strong> 科学研究や論文のデータベース<br>
+                <button class="view-article-btn" onclick="viewCategory('科学')">このカテゴリー記事を見る</button>
+            </div>
+            <div class="database-item" data-category="教育">
+                <strong>名前:</strong> 教育データベース<br>
+                <strong>カテゴリー:</strong> 教育<br>
+                <strong>説明:</strong> 教育リソースや研究成果を集めたデータベース<br>
+                <button class="view-article-btn" onclick="viewCategory('教育')">このカテゴリー記事を見る</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // データベースのフィルター機能
+        function filterDatabases(category) {
+            const items = document.querySelectorAll('.database-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-category') === category || category === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 検索機能
+        function searchDatabases() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const items = document.querySelectorAll('.database-item');
+            items.forEach(item => {
+                const name = item.querySelector('strong').innerText.toLowerCase();
+                if (name.includes(query)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // カテゴリーの記事を表示する関数
+        function viewCategory(category) {
+            // カテゴリーに応じてリダイレクト先を設定
+            const urls = {
+                'IT': 'it_category.html',
+                '医療': 'medical_category.html',
+                '金融': 'finance_category.html',
+                '歴史': 'history_category.html',
+                '科学': 'science_category.html',
+                '教育': 'education_category.html'
+            };
+
+            // 遷移先URLへリダイレクト
+            window.location.href = urls[category];
+        }
+    </script>
+
+</body>
+</html>
